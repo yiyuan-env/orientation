@@ -28,7 +28,7 @@
   .screen.on{display:flex}
   @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   @keyframes pop{0%{transform:scale(.9);opacity:0}60%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
-
+ 
   /* ---------- START ---------- */
   .brand-badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:3px;
     color:var(--moss);border:1px solid var(--line);padding:7px 14px;border-radius:999px;align-self:center}
@@ -52,7 +52,7 @@
   .btn:active{transform:translateY(0)}
   .btn.ghost{background:rgba(255,255,255,.09);color:#eaf3ec;box-shadow:none;border:1px solid var(--line);font-weight:700}
   .foot{margin-top:auto;text-align:center;color:#5f8570;font-size:12px;padding-top:22px}
-
+ 
   /* ---------- TOP BAR (quiz) ---------- */
   .topbar{display:flex;align-items:center;gap:14px;margin-bottom:16px}
   .qcount{font-weight:900;font-size:15px;color:#cfe6d5;white-space:nowrap}
@@ -63,7 +63,7 @@
     color:#f4c67a;border-radius:999px;padding:7px 14px;white-space:nowrap}
   .iconbtn{background:rgba(255,255,255,.08);border:1px solid var(--line);color:#cfe6d5;border-radius:10px;
     width:40px;height:40px;font-size:18px;cursor:pointer;display:grid;place-items:center}
-
+ 
   /* ---------- QUESTION ---------- */
   .qcard{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:var(--radius);
     padding:clamp(18px,3.2vw,30px);margin-bottom:18px;position:relative;animation:pop .35s ease both}
@@ -76,7 +76,7 @@
   .timer .bg{stroke:rgba(255,255,255,.12)}
   .timer .fg{stroke:var(--sun);stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;
     transition:stroke-dashoffset 1s linear, stroke .3s}
-
+ 
   .options{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   @media(max-width:560px){.options{grid-template-columns:1fr}}
   .opt{position:relative;text-align:left;cursor:pointer;border:none;font-family:inherit;color:#fff;
@@ -94,7 +94,7 @@
   .opt.dim{opacity:.4;filter:grayscale(.4)}
   .opt .mark{position:absolute;right:14px;bottom:12px;font-size:20px;font-weight:900;opacity:0;transition:opacity .2s}
   .opt.correct .mark,.opt.wrong .mark{opacity:1}
-
+ 
   .explain{margin-top:16px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-left:4px solid var(--moss);
     border-radius:12px;padding:16px 18px;font-size:14.5px;line-height:1.7;color:#e7f2ea;display:none;animation:fade .3s ease both}
   .explain.show{display:block}
@@ -102,7 +102,7 @@
   .explain .verdict{font-weight:900;font-size:16px;margin-bottom:6px;display:block}
   .explain.ok .verdict{color:#8fe6a8}.explain.no .verdict{color:#f0a08c}
   .nextrow{display:flex;justify-content:flex-end;margin-top:16px}
-
+ 
   /* ---------- RESULTS ---------- */
   .result-hero{text-align:center;margin:auto;max-width:640px}
   .ring{width:190px;height:190px;margin:0 auto 10px;position:relative}
@@ -129,9 +129,9 @@
   .confetti{position:fixed;top:-10px;width:10px;height:14px;border-radius:2px;pointer-events:none;z-index:50}
   @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
 </style>
-
+ 
 <div class="wrap">
-
+ 
   <!-- ============ START ============ -->
   <section class="screen on" id="s-start">
     <span class="brand-badge">環教法第 19 條 · 教育訓練</span>
@@ -154,7 +154,7 @@
     </div>
     <div class="foot">連江縣環境資源局 委辦計畫 · 邑沅有限公司 · 內部教育訓練用</div>
   </section>
-
+ 
   <!-- ============ QUIZ ============ -->
   <section class="screen" id="s-quiz">
     <div class="topbar">
@@ -163,7 +163,7 @@
       <span class="score-pill" id="scorePill">0 分</span>
       <button class="iconbtn" id="muteBtn" title="音效開關" aria-label="音效開關">🔊</button>
     </div>
-
+ 
     <div class="qcard">
       <div class="timer">
         <svg viewBox="0 0 52 52"><circle class="bg" cx="26" cy="26" r="23"/><circle class="fg" id="tRing" cx="26" cy="26" r="23"/></svg>
@@ -172,16 +172,16 @@
       <span class="qtag" id="qtag">Q1</span>
       <p class="qtext" id="qtext">—</p>
     </div>
-
+ 
     <div class="options" id="options"></div>
-
+ 
     <div class="explain" id="explain">
       <span class="verdict" id="verdict"></span>
       <span id="expText"></span>
     </div>
     <div class="nextrow"><button class="btn" id="nextBtn" style="display:none">下一題 →</button></div>
   </section>
-
+ 
   <!-- ============ RESULTS ============ -->
   <section class="screen" id="s-result">
     <div class="result-hero">
@@ -205,9 +205,9 @@
     </div>
     <div class="foot">題目對應教育訓練手冊「七、教育訓練自我檢核 Q&amp;A」Q1–Q8</div>
   </section>
-
+ 
 </div>
-
+ 
 <script>
 const QUESTIONS = [
   {
@@ -299,16 +299,24 @@ const QUESTIONS = [
     exp:"這是最常見的操作錯誤：系統會<b>直接擋下並顯示「辦理日期錯誤」</b>。務必提醒單位——<b>先建計畫、再辦活動</b>。"
   }
 ];
-
+ 
 const T_MAX = 30, BASE = 100, SPEED_BONUS = 100; // per question: 100 base + up to 100 speed
 let idx=0, score=0, answered=false, timeLeft=T_MAX, timerId=null, muted=false;
+let curOrder=[], curCorrect=0;          // display order + display index of the correct answer
 const results=[];
 const RING_LEN = 2*Math.PI*23;
-
+ 
+// Fisher–Yates shuffle (returns a new array)
+function shuffled(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+ 
 const $ = s=>document.querySelector(s);
 const screens={start:$("#s-start"),quiz:$("#s-quiz"),result:$("#s-result")};
 function show(name){for(const k in screens)screens[k].classList.toggle("on",k===name)}
-
+ 
 // --- tiny WebAudio blips (no assets) ---
 let ac=null;
 function beep(type){
@@ -328,14 +336,14 @@ function beep(type){
   }catch(e){}
 }
 function tick(){ if(!muted && ac){/* soft, optional */} }
-
+ 
 const SHAPES=["▲","●","■","◆"];
-
+ 
 function startQuiz(){
   idx=0;score=0;results.length=0;
   updateScore();show("quiz");renderQ();
 }
-
+ 
 function renderQ(){
   answered=false; timeLeft=T_MAX;
   const item=QUESTIONS[idx];
@@ -345,16 +353,19 @@ function renderQ(){
   $("#pbar").style.width=`${(idx)/QUESTIONS.length*100}%`;
   $("#explain").className="explain";$("#explain").classList.remove("show");
   $("#nextBtn").style.display="none";
-
+ 
   const box=$("#options");box.innerHTML="";
-  item.opts.forEach((txt,i)=>{
+  // randomize option order each time this question is shown
+  curOrder = shuffled([0,1,2,3].slice(0,item.opts.length));
+  curCorrect = curOrder.indexOf(item.correct);   // where the correct answer now sits
+  curOrder.forEach((orig,pos)=>{
     const b=document.createElement("button");
-    b.className=`opt c${i}`;b.style.animationDelay=`${i*.06}s`;
-    b.innerHTML=`<span class="shape">${SHAPES[i]}</span>${txt}<span class="kbd">${i+1}</span><span class="mark"></span>`;
-    b.onclick=()=>choose(i,b);
+    b.className=`opt c${pos}`;b.style.animationDelay=`${pos*.06}s`;
+    b.innerHTML=`<span class="shape">${SHAPES[pos]}</span>${item.opts[orig]}<span class="kbd">${pos+1}</span><span class="mark"></span>`;
+    b.onclick=()=>choose(pos,b);
     box.appendChild(b);
   });
-
+ 
   // timer ring
   const ring=$("#tRing");
   ring.style.strokeDasharray=RING_LEN;
@@ -370,38 +381,38 @@ function renderQ(){
     if(timeLeft<=0){clearInterval(timerId);timeUp();}
   },1000);
 }
-
+ 
 function choose(i,btn){
   if(answered)return;answered=true;clearInterval(timerId);
-  const item=QUESTIONS[idx];const ok=i===item.correct;
+  const item=QUESTIONS[idx];const ok=i===curCorrect;
   const opts=[...document.querySelectorAll(".opt")];
   opts.forEach((o,j)=>{
     o.disabled=true;
-    if(j===item.correct)o.classList.add("correct"),o.querySelector(".mark").textContent="✓";
+    if(j===curCorrect)o.classList.add("correct"),o.querySelector(".mark").textContent="✓";
     else if(j===i)o.classList.add("wrong"),o.querySelector(".mark").textContent="✕";
     else o.classList.add("dim");
   });
   let gained=0;
   if(ok){gained=BASE+Math.round(SPEED_BONUS*(timeLeft/T_MAX));score+=gained;beep("ok");burst();}
   else beep("no");
-  results.push({q:item.q,correct:item.opts[item.correct],picked:i<0?null:item.opts[i],ok,exp:item.exp});
+  results.push({q:item.q,correct:item.opts[item.correct],picked:item.opts[curOrder[i]],ok,exp:item.exp});
   updateScore();
   showExplain(ok,item.exp,gained);
 }
-
+ 
 function timeUp(){
   if(answered)return;answered=true;
   const item=QUESTIONS[idx];
   [...document.querySelectorAll(".opt")].forEach((o,j)=>{
     o.disabled=true;
-    if(j===item.correct)o.classList.add("correct"),o.querySelector(".mark").textContent="✓";
+    if(j===curCorrect)o.classList.add("correct"),o.querySelector(".mark").textContent="✓";
     else o.classList.add("dim");
   });
   beep("no");
   results.push({q:item.q,correct:item.opts[item.correct],picked:null,ok:false,exp:item.exp});
   showExplain(false,item.exp,0,true);
 }
-
+ 
 function showExplain(ok,text,gained,timeout){
   const e=$("#explain");e.classList.add("show");
   e.classList.add(ok?"ok":"no");
@@ -412,27 +423,27 @@ function showExplain(ok,text,gained,timeout){
   nb.style.display="inline-block";
   nb.focus();
 }
-
+ 
 function next(){
   if(idx<QUESTIONS.length-1){idx++;renderQ();}
   else finish();
 }
-
+ 
 function updateScore(){$("#scorePill").textContent=`${score} 分`;}
-
+ 
 function finish(){
   clearInterval(timerId);
   const correctCount=results.filter(r=>r.ok).length;
   const pct=Math.round(correctCount/QUESTIONS.length*100);
   $("#pbar").style.width="100%";
   show("result");
-
+ 
   // ring
   const RL=2*Math.PI*82;const rr=$("#resultRing");
   rr.style.strokeDasharray=RL;rr.style.strokeDashoffset=RL;
   requestAnimationFrame(()=>requestAnimationFrame(()=>{rr.style.strokeDashoffset=RL*(1-pct/100);}));
   animateNum($("#pctNum"),pct,"%");
-
+ 
   const name=($("#playerName").value||"").trim();
   let title,sub;
   if(pct===100){title="滿分！環教查核達人 🏆";sub="每一題都答對，可以上場查核了。";}
@@ -443,7 +454,7 @@ function finish(){
   $("#resultSub").textContent=sub;
   $("#resultScore").textContent=`答對 ${correctCount} / ${QUESTIONS.length} 題　·　總得分 ${score} 分`;
   if(pct>=75)confetti();
-
+ 
   const rev=$("#review");rev.innerHTML="";
   results.forEach((r,i)=>{
     const row=document.createElement("div");row.className="rev-item";
@@ -453,12 +464,12 @@ function finish(){
     rev.appendChild(row);
   });
 }
-
+ 
 function animateNum(el,target,suffix){
   let n=0;const step=Math.max(1,Math.round(target/40));
   const id=setInterval(()=>{n+=step;if(n>=target){n=target;clearInterval(id);}el.textContent=n+suffix;},22);
 }
-
+ 
 // --- confetti (celebration only) ---
 function confetti(){
   const cols=["#8fd0a0","#E0921C","#1C7C9C","#C6553F","#4fae6a"];
@@ -475,7 +486,7 @@ function confetti(){
   }
 }
 function burst(){ /* small tick on correct */ }
-
+ 
 // --- events ---
 $("#startBtn").onclick=startQuiz;
 $("#playerName").addEventListener("keydown",e=>{if(e.key==="Enter")startQuiz();});
