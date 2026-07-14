@@ -1,0 +1,493 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>環教法第19條 · 互動測驗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep:#12301F; --deep2:#1B4332; --green:#2D6A4F; --moss:#74A57F;
+    --ink:#1a241e; --paper:#F3F8F4; --line:rgba(255,255,255,.14);
+    --leaf:#3FA34D; --water:#1C7C9C; --sun:#E0921C; --clay:#C6553F;
+    --good:#2E9E5B; --bad:#C6553F;
+    --radius:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:"Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+    color:#fff;
+    background:
+      radial-gradient(1200px 700px at 15% -10%, #204d34 0%, transparent 55%),
+      radial-gradient(900px 600px at 110% 10%, #1d6b57 0%, transparent 50%),
+      linear-gradient(160deg,#12301F 0%, #0d2417 100%);
+    min-height:100dvh; overflow-x:hidden;
+  }
+  .wrap{max-width:960px;margin:0 auto;padding:clamp(16px,4vw,40px);min-height:100dvh;display:flex;flex-direction:column}
+  .screen{display:none;flex:1;flex-direction:column;animation:fade .35s ease both}
+  .screen.on{display:flex}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes pop{0%{transform:scale(.9);opacity:0}60%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+
+  /* ---------- START ---------- */
+  .brand-badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:3px;
+    color:var(--moss);border:1px solid var(--line);padding:7px 14px;border-radius:999px;align-self:center}
+  .hero{margin:auto;text-align:center;max-width:640px}
+  .leaf-mark{width:74px;height:74px;margin:0 auto 22px;display:block;filter:drop-shadow(0 6px 20px rgba(0,0,0,.35))}
+  h1{font-weight:900;font-size:clamp(30px,6vw,52px);line-height:1.12;margin:.2em 0 .15em;
+     background:linear-gradient(180deg,#fff, #cfe6d5);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:#bcd6c3;font-size:clamp(15px,2.4vw,19px);font-weight:500;line-height:1.6;margin:0 auto 26px;max-width:520px}
+  .metarow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:30px}
+  .chip{background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:999px;
+    padding:8px 15px;font-size:13.5px;font-weight:700;color:#e7f2ea}
+  .chip b{color:var(--moss)}
+  .name-field{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+  input[type=text]{font-family:inherit;font-size:16px;font-weight:600;color:#0d2417;background:#eaf3ec;border:none;
+    border-radius:12px;padding:14px 18px;width:min(320px,80vw);outline:3px solid transparent}
+  input[type=text]:focus{outline-color:var(--moss)}
+  .btn{font-family:inherit;cursor:pointer;border:none;border-radius:14px;font-weight:900;letter-spacing:.5px;
+    padding:16px 34px;font-size:18px;color:#0d2417;background:linear-gradient(180deg,#8fd0a0,#4fae6a);
+    box-shadow:0 8px 22px rgba(46,158,91,.35), inset 0 1px 0 rgba(255,255,255,.4);transition:transform .12s, box-shadow .12s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(46,158,91,.45)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{background:rgba(255,255,255,.09);color:#eaf3ec;box-shadow:none;border:1px solid var(--line);font-weight:700}
+  .foot{margin-top:auto;text-align:center;color:#5f8570;font-size:12px;padding-top:22px}
+
+  /* ---------- TOP BAR (quiz) ---------- */
+  .topbar{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .qcount{font-weight:900;font-size:15px;color:#cfe6d5;white-space:nowrap}
+  .progress{flex:1;height:12px;background:rgba(255,255,255,.1);border-radius:999px;overflow:hidden}
+  .progress > i{display:block;height:100%;width:0;border-radius:999px;
+    background:linear-gradient(90deg,var(--moss),var(--leaf));transition:width .5s cubic-bezier(.4,1.3,.5,1)}
+  .score-pill{font-weight:900;font-size:15px;background:rgba(224,146,28,.16);border:1px solid rgba(224,146,28,.4);
+    color:#f4c67a;border-radius:999px;padding:7px 14px;white-space:nowrap}
+  .iconbtn{background:rgba(255,255,255,.08);border:1px solid var(--line);color:#cfe6d5;border-radius:10px;
+    width:40px;height:40px;font-size:18px;cursor:pointer;display:grid;place-items:center}
+
+  /* ---------- QUESTION ---------- */
+  .qcard{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:var(--radius);
+    padding:clamp(18px,3.2vw,30px);margin-bottom:18px;position:relative;animation:pop .35s ease both}
+  .qtag{display:inline-block;font-size:12.5px;font-weight:800;letter-spacing:1px;color:var(--moss);
+    background:rgba(116,165,127,.14);padding:5px 12px;border-radius:999px;margin-bottom:14px}
+  .qtext{font-weight:900;font-size:clamp(20px,3.4vw,28px);line-height:1.4;margin:0}
+  .timer{position:absolute;top:18px;right:18px;width:52px;height:52px}
+  .timer .num{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;font-size:18px;color:#fff}
+  .timer circle{fill:none;stroke-width:6}
+  .timer .bg{stroke:rgba(255,255,255,.12)}
+  .timer .fg{stroke:var(--sun);stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;
+    transition:stroke-dashoffset 1s linear, stroke .3s}
+
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.options{grid-template-columns:1fr}}
+  .opt{position:relative;text-align:left;cursor:pointer;border:none;font-family:inherit;color:#fff;
+    border-radius:16px;padding:18px 18px 18px 60px;font-size:clamp(15px,2.4vw,17px);font-weight:700;line-height:1.45;
+    min-height:78px;display:flex;align-items:center;box-shadow:inset 0 -4px 0 rgba(0,0,0,.18);
+    transition:transform .12s, filter .12s, box-shadow .2s;animation:pop .35s ease both}
+  .opt:hover:not(:disabled){transform:translateY(-3px);filter:brightness(1.08)}
+  .opt:disabled{cursor:default}
+  .opt .shape{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:30px;height:30px;
+    display:grid;place-items:center;color:#fff;font-size:15px;font-weight:900}
+  .opt .kbd{position:absolute;right:12px;top:10px;font-size:11px;font-weight:800;opacity:.6}
+  .opt.c0{background:#3FA34D}.opt.c1{background:#1C7C9C}.opt.c2{background:#E0921C}.opt.c3{background:#C6553F}
+  .opt.correct{background:#2E9E5B !important;box-shadow:0 0 0 3px #b6f0c9, inset 0 -4px 0 rgba(0,0,0,.18)}
+  .opt.wrong{background:#9b3d2e !important;filter:grayscale(.15) brightness(.85)}
+  .opt.dim{opacity:.4;filter:grayscale(.4)}
+  .opt .mark{position:absolute;right:14px;bottom:12px;font-size:20px;font-weight:900;opacity:0;transition:opacity .2s}
+  .opt.correct .mark,.opt.wrong .mark{opacity:1}
+
+  .explain{margin-top:16px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-left:4px solid var(--moss);
+    border-radius:12px;padding:16px 18px;font-size:14.5px;line-height:1.7;color:#e7f2ea;display:none;animation:fade .3s ease both}
+  .explain.show{display:block}
+  .explain b{color:#9fe0b3}
+  .explain .verdict{font-weight:900;font-size:16px;margin-bottom:6px;display:block}
+  .explain.ok .verdict{color:#8fe6a8}.explain.no .verdict{color:#f0a08c}
+  .nextrow{display:flex;justify-content:flex-end;margin-top:16px}
+
+  /* ---------- RESULTS ---------- */
+  .result-hero{text-align:center;margin:auto;max-width:640px}
+  .ring{width:190px;height:190px;margin:0 auto 10px;position:relative}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .rbg{stroke:rgba(255,255,255,.1)}
+  .ring .rfg{stroke:url(#grad);stroke-linecap:round;transition:stroke-dashoffset 1.4s cubic-bezier(.3,1,.4,1)}
+  .ring .center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .ring .pct{font-weight:900;font-size:46px;line-height:1}
+  .ring .pl{font-size:13px;color:#bcd6c3;font-weight:700;margin-top:4px}
+  .verdict-big{font-weight:900;font-size:clamp(24px,5vw,34px);margin:6px 0}
+  .verdict-sub{color:#bcd6c3;font-size:16px;margin-bottom:8px}
+  .scoreline{font-size:17px;font-weight:700;color:#f4c67a;margin-bottom:26px}
+  .review{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:var(--radius);
+    padding:8px;margin-bottom:22px;text-align:left}
+  .rev-item{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px}
+  .rev-item + .rev-item{border-top:1px solid var(--line)}
+  .rev-ic{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:14px;margin-top:2px}
+  .rev-ic.ok{background:rgba(46,158,91,.2);color:#8fe6a8}
+  .rev-ic.no{background:rgba(198,85,63,.22);color:#f0a08c}
+  .rev-q{font-weight:700;font-size:14.5px;line-height:1.5;color:#eaf3ec}
+  .rev-a{font-size:13px;color:#9fbdaa;margin-top:4px;line-height:1.5}
+  .rev-a b{color:#9fe0b3;font-weight:700}
+  .btnrow{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .confetti{position:fixed;top:-10px;width:10px;height:14px;border-radius:2px;pointer-events:none;z-index:50}
+  @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+
+<div class="wrap">
+
+  <!-- ============ START ============ -->
+  <section class="screen on" id="s-start">
+    <span class="brand-badge">環教法第 19 條 · 教育訓練</span>
+    <div class="hero">
+      <svg class="leaf-mark" viewBox="0 0 100 100" aria-hidden="true">
+        <path d="M50 6C26 20 14 42 18 70c2 14 12 22 12 22S22 74 34 58c10-13 22-16 22-16S40 50 34 66c0 0 4-30 40-40 0 0-6 30-24 40-9 5-18 5-18 5" fill="none" stroke="#8fd0a0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M50 92c0-24 0-52 24-72" fill="none" stroke="#4fae6a" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <h1>環境教育法第 19 條<br>成效輔導查核 互動測驗</h1>
+      <p class="sub">成效輔導查核暨限期辦理行政作業 · 8 題快問快答。<br>答對加分、答錯即時看解析，最後看你拿幾分！</p>
+      <div class="metarow">
+        <span class="chip">📋 共 <b>8</b> 題</span>
+        <span class="chip">⏱ 每題 <b>30</b> 秒</span>
+        <span class="chip">⚡ 越快答對 <b>分數越高</b></span>
+      </div>
+      <div class="name-field">
+        <input id="playerName" type="text" placeholder="輸入你的名字（選填）" maxlength="16" autocomplete="off">
+      </div>
+      <button class="btn" id="startBtn">開始測驗 →</button>
+    </div>
+    <div class="foot">連江縣環境資源局 委辦計畫 · 邑沅有限公司 · 內部教育訓練用</div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="screen" id="s-quiz">
+    <div class="topbar">
+      <span class="qcount" id="qcount">第 1 / 8 題</span>
+      <div class="progress"><i id="pbar"></i></div>
+      <span class="score-pill" id="scorePill">0 分</span>
+      <button class="iconbtn" id="muteBtn" title="音效開關" aria-label="音效開關">🔊</button>
+    </div>
+
+    <div class="qcard">
+      <div class="timer">
+        <svg viewBox="0 0 52 52"><circle class="bg" cx="26" cy="26" r="23"/><circle class="fg" id="tRing" cx="26" cy="26" r="23"/></svg>
+        <span class="num" id="tNum">30</span>
+      </div>
+      <span class="qtag" id="qtag">Q1</span>
+      <p class="qtext" id="qtext">—</p>
+    </div>
+
+    <div class="options" id="options"></div>
+
+    <div class="explain" id="explain">
+      <span class="verdict" id="verdict"></span>
+      <span id="expText"></span>
+    </div>
+    <div class="nextrow"><button class="btn" id="nextBtn" style="display:none">下一題 →</button></div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section class="screen" id="s-result">
+    <div class="result-hero">
+      <div class="ring">
+        <svg width="190" height="190" viewBox="0 0 190 190">
+          <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#8fd0a0"/><stop offset="1" stop-color="#E0921C"/></linearGradient></defs>
+          <circle class="rbg" cx="95" cy="95" r="82" fill="none" stroke-width="14"/>
+          <circle class="rfg" id="resultRing" cx="95" cy="95" r="82" fill="none" stroke-width="14"/>
+        </svg>
+        <div class="center"><span class="pct" id="pctNum">0%</span><span class="pl">答對率</span></div>
+      </div>
+      <div class="verdict-big" id="resultTitle">—</div>
+      <div class="verdict-sub" id="resultSub"></div>
+      <div class="scoreline" id="resultScore"></div>
+      <div class="review" id="review"></div>
+      <div class="btnrow">
+        <button class="btn" id="retryBtn">再測一次 ↻</button>
+        <button class="btn ghost" id="reviewToggle">顯示 / 隱藏詳解</button>
+      </div>
+    </div>
+    <div class="foot">題目對應教育訓練手冊「七、教育訓練自我檢核 Q&amp;A」Q1–Q8</div>
+  </section>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    q:"查核名單是依什麼邏輯篩選？每鄉至少要查核幾處？",
+    opts:[
+      "兩層檢視、交叉比對（113 年成果＋114 年提報情形），每鄉至少 1 處",
+      "隨機抽樣，每鄉至少 3 處",
+      "依單位人數規模由大到小排序，每鄉至少 2 處",
+      "依申報時間先後，全縣統一抽 10 處"
+    ],
+    correct:0,
+    exp:"名單並非隨機。第一層看 <b>113 年申報成果</b>是否落入 7 類異常，第二層看 <b>114 年計畫與成果提報</b>情形，交叉比對後優先選入「前一年異常＋當年又未提報／異常」之單位，且<b>每鄉至少 1 處</b>，全年至少 20 處。"
+  },
+  {
+    q:"「無實體課程」（全採線上申報時數）時，4 類應備資料中哪一類可以免繳？",
+    opts:[
+      "成果申報之環境教育實施佐證資料",
+      "申報員工（班級）清冊",
+      "當年度計畫提報內容（含子計畫）",
+      "員工學習佐證資料"
+    ],
+    correct:0,
+    exp:"無實體課程者可免繳<b>第 3 項「實施佐證資料」</b>（照片、簽到表、教材等），但<b>員工學習佐證資料仍須具備</b>，供抽查核對。"
+  },
+  {
+    q:"現場查核紀錄表分為四大區塊，哪一區塊是查核的核心重點？",
+    opts:[
+      "環境教育辦理情形",
+      "基本資料",
+      "提報名單清冊",
+      "人員學習佐證資料"
+    ],
+    correct:0,
+    exp:"核心是「<b>環境教育辦理情形</b>」——判斷單位是否<b>確實落實立法意涵</b>，而非只是形式上完成申報。此區含佐證、內容關聯性、時數合理性、是否過度線上、參與人數是否異常等 5 項檢核。"
+  },
+  {
+    q:"114 年度實際查核中，最常出現的是哪兩類異常？",
+    opts:[
+      "內容闡述過於簡略 ＋ 網路學習比例過高",
+      "活動場次少於 3 場 ＋ 參與人數異常過高",
+      "活動內容為打掃環境 ＋ 領域過於單一",
+      "時數登錄錯誤 ＋ 未提報計畫"
+    ],
+    correct:0,
+    exp:"最常見的兩類：① 活動<b>闡述內容過於簡略</b>或未含環境教育意涵；② 實施方式<b>網路學習、影片觀賞比例過高</b>，缺乏多元形式。（其他選項屬較少見或較嚴重的情形。）"
+  },
+  {
+    q:"什麼情形應「直接列入限期辦理」，而非只給口頭輔導建議？",
+    opts:[
+      "單次活動參與人員超過總人數 90%，或當年度活動少於 3 次",
+      "承辦人異動未即時更新聯絡窗口",
+      "佐證照片張數偏少",
+      "計畫內容有錯字"
+    ],
+    correct:0,
+    exp:"出現<b>明確違反第 19 條</b>的嚴重情形——例如<b>單次參與＞總人數 90%</b>（虛列人數疑慮）或<b>當年度活動＜3 次</b>——應直接進入限期辦理程序，不只是口頭建議。"
+  },
+  {
+    q:"限期辦理的 9 類違反事實中，哪幾類與「時數／時限」直接相關？",
+    opts:[
+      "第 2、3、5、6 類",
+      "第 1、4、7 類",
+      "第 7、8、9 類",
+      "第 1、2、3 類"
+    ],
+    correct:0,
+    exp:"與時數／時限直接相關的是：<b>第 2 類</b>（變動未於 1 個月內提報變更）、<b>第 3 類</b>（未於 1 個月內提報成果）、<b>第 5 類</b>（未達每人每年 4 小時）、<b>第 6 類</b>（未提報環境教育時數）。"
+  },
+  {
+    q:"免納入名冊的原因中，哪一類「需經環境部同意」才會生效？",
+    opts:[
+      "重大傷病、重大疾病及其他特殊原因",
+      "退休、資遣、離職",
+      "工作未滿 90 日曆天",
+      "因公派駐國外"
+    ],
+    correct:0,
+    exp:"<b>重大傷病、重大疾病及其他特殊原因</b>須提出申請並檢附佐證，<b>經環境部同意後才生效</b>——常被單位誤以為可自行認定。退休／資遣／離職由單位自行刪除；未滿 90 日曆天、因公派駐國外則不需審核、系統自動調整。"
+  },
+  {
+    q:"計畫提報若晚於活動辦理日期，系統會出現什麼結果？",
+    opts:[
+      "系統直接擋下並顯示「辦理日期錯誤」",
+      "系統自動把計畫起始日往前調整",
+      "系統照常受理，僅標記警示",
+      "系統要求補上佐證後才通過"
+    ],
+    correct:0,
+    exp:"這是最常見的操作錯誤：系統會<b>直接擋下並顯示「辦理日期錯誤」</b>。務必提醒單位——<b>先建計畫、再辦活動</b>。"
+  }
+];
+
+const T_MAX = 30, BASE = 100, SPEED_BONUS = 100; // per question: 100 base + up to 100 speed
+let idx=0, score=0, answered=false, timeLeft=T_MAX, timerId=null, muted=false;
+const results=[];
+const RING_LEN = 2*Math.PI*23;
+
+const $ = s=>document.querySelector(s);
+const screens={start:$("#s-start"),quiz:$("#s-quiz"),result:$("#s-result")};
+function show(name){for(const k in screens)screens[k].classList.toggle("on",k===name)}
+
+// --- tiny WebAudio blips (no assets) ---
+let ac=null;
+function beep(type){
+  if(muted)return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    const seq = type==="ok"?[[660,0],[880,.1]]:[[220,0],[160,.12]];
+    seq.forEach(([f,t])=>{
+      const o=ac.createOscillator(),g=ac.createGain();
+      o.type= type==="ok"?"triangle":"sawtooth"; o.frequency.value=f;
+      o.connect(g);g.connect(ac.destination);
+      const s=ac.currentTime+t;
+      g.gain.setValueAtTime(.0001,s);g.gain.exponentialRampToValueAtTime(.18,s+.02);
+      g.gain.exponentialRampToValueAtTime(.0001,s+.18);
+      o.start(s);o.stop(s+.2);
+    });
+  }catch(e){}
+}
+function tick(){ if(!muted && ac){/* soft, optional */} }
+
+const SHAPES=["▲","●","■","◆"];
+
+function startQuiz(){
+  idx=0;score=0;results.length=0;
+  updateScore();show("quiz");renderQ();
+}
+
+function renderQ(){
+  answered=false; timeLeft=T_MAX;
+  const item=QUESTIONS[idx];
+  $("#qcount").textContent=`第 ${idx+1} / ${QUESTIONS.length} 題`;
+  $("#qtag").textContent=`Q${idx+1}`;
+  $("#qtext").textContent=item.q;
+  $("#pbar").style.width=`${(idx)/QUESTIONS.length*100}%`;
+  $("#explain").className="explain";$("#explain").classList.remove("show");
+  $("#nextBtn").style.display="none";
+
+  const box=$("#options");box.innerHTML="";
+  item.opts.forEach((txt,i)=>{
+    const b=document.createElement("button");
+    b.className=`opt c${i}`;b.style.animationDelay=`${i*.06}s`;
+    b.innerHTML=`<span class="shape">${SHAPES[i]}</span>${txt}<span class="kbd">${i+1}</span><span class="mark"></span>`;
+    b.onclick=()=>choose(i,b);
+    box.appendChild(b);
+  });
+
+  // timer ring
+  const ring=$("#tRing");
+  ring.style.strokeDasharray=RING_LEN;
+  ring.style.strokeDashoffset=0;ring.style.stroke="var(--sun)";
+  $("#tNum").textContent=T_MAX;
+  clearInterval(timerId);
+  timerId=setInterval(()=>{
+    timeLeft--;
+    $("#tNum").textContent=Math.max(timeLeft,0);
+    const frac=timeLeft/T_MAX;
+    ring.style.strokeDashoffset=RING_LEN*(1-frac);
+    if(timeLeft<=10)ring.style.stroke="var(--clay)";
+    if(timeLeft<=0){clearInterval(timerId);timeUp();}
+  },1000);
+}
+
+function choose(i,btn){
+  if(answered)return;answered=true;clearInterval(timerId);
+  const item=QUESTIONS[idx];const ok=i===item.correct;
+  const opts=[...document.querySelectorAll(".opt")];
+  opts.forEach((o,j)=>{
+    o.disabled=true;
+    if(j===item.correct)o.classList.add("correct"),o.querySelector(".mark").textContent="✓";
+    else if(j===i)o.classList.add("wrong"),o.querySelector(".mark").textContent="✕";
+    else o.classList.add("dim");
+  });
+  let gained=0;
+  if(ok){gained=BASE+Math.round(SPEED_BONUS*(timeLeft/T_MAX));score+=gained;beep("ok");burst();}
+  else beep("no");
+  results.push({q:item.q,correct:item.opts[item.correct],picked:i<0?null:item.opts[i],ok,exp:item.exp});
+  updateScore();
+  showExplain(ok,item.exp,gained);
+}
+
+function timeUp(){
+  if(answered)return;answered=true;
+  const item=QUESTIONS[idx];
+  [...document.querySelectorAll(".opt")].forEach((o,j)=>{
+    o.disabled=true;
+    if(j===item.correct)o.classList.add("correct"),o.querySelector(".mark").textContent="✓";
+    else o.classList.add("dim");
+  });
+  beep("no");
+  results.push({q:item.q,correct:item.opts[item.correct],picked:null,ok:false,exp:item.exp});
+  showExplain(false,item.exp,0,true);
+}
+
+function showExplain(ok,text,gained,timeout){
+  const e=$("#explain");e.classList.add("show");
+  e.classList.add(ok?"ok":"no");
+  $("#verdict").textContent = ok?`答對！ +${gained} 分`:(timeout?"時間到 ⏱":"答錯了");
+  $("#expText").innerHTML=text;
+  const nb=$("#nextBtn");
+  nb.textContent = idx===QUESTIONS.length-1 ? "看結果 →" : "下一題 →";
+  nb.style.display="inline-block";
+  nb.focus();
+}
+
+function next(){
+  if(idx<QUESTIONS.length-1){idx++;renderQ();}
+  else finish();
+}
+
+function updateScore(){$("#scorePill").textContent=`${score} 分`;}
+
+function finish(){
+  clearInterval(timerId);
+  const correctCount=results.filter(r=>r.ok).length;
+  const pct=Math.round(correctCount/QUESTIONS.length*100);
+  $("#pbar").style.width="100%";
+  show("result");
+
+  // ring
+  const RL=2*Math.PI*82;const rr=$("#resultRing");
+  rr.style.strokeDasharray=RL;rr.style.strokeDashoffset=RL;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{rr.style.strokeDashoffset=RL*(1-pct/100);}));
+  animateNum($("#pctNum"),pct,"%");
+
+  const name=($("#playerName").value||"").trim();
+  let title,sub;
+  if(pct===100){title="滿分！環教查核達人 🏆";sub="每一題都答對，可以上場查核了。";}
+  else if(pct>=75){title="表現優異 🌿";sub="觀念很紮實，少數細節再複習就完美。";}
+  else if(pct>=50){title="及格通過 ✅";sub="基礎掌握不錯，建議回顧錯題章節。";}
+  else{title="再加油 📖";sub="建議重讀訓練手冊後再挑戰一次。";}
+  $("#resultTitle").textContent=(name?name+"，":"")+title;
+  $("#resultSub").textContent=sub;
+  $("#resultScore").textContent=`答對 ${correctCount} / ${QUESTIONS.length} 題　·　總得分 ${score} 分`;
+  if(pct>=75)confetti();
+
+  const rev=$("#review");rev.innerHTML="";
+  results.forEach((r,i)=>{
+    const row=document.createElement("div");row.className="rev-item";
+    row.innerHTML=`<span class="rev-ic ${r.ok?'ok':'no'}">${r.ok?'✓':'✕'}</span>
+      <div><div class="rev-q">Q${i+1}. ${r.q}</div>
+      <div class="rev-a">正解：<b>${r.correct}</b>${r.picked&&!r.ok?`　｜　你選：${r.picked}`:(r.picked===null&&!r.ok?"　｜　未作答":"")}</div></div>`;
+    rev.appendChild(row);
+  });
+}
+
+function animateNum(el,target,suffix){
+  let n=0;const step=Math.max(1,Math.round(target/40));
+  const id=setInterval(()=>{n+=step;if(n>=target){n=target;clearInterval(id);}el.textContent=n+suffix;},22);
+}
+
+// --- confetti (celebration only) ---
+function confetti(){
+  const cols=["#8fd0a0","#E0921C","#1C7C9C","#C6553F","#4fae6a"];
+  for(let i=0;i<80;i++){
+    const c=document.createElement("div");c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=cols[i%cols.length];
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    const dur=2.4+Math.random()*1.6, delay=Math.random()*.6;
+    c.animate([{transform:`translateY(-10px) rotate(0)`,opacity:1},
+      {transform:`translateY(105vh) rotate(${540+Math.random()*360}deg)`,opacity:.9}],
+      {duration:dur*1000,delay:delay*1000,easing:"cubic-bezier(.2,.6,.4,1)"}).onfinish=()=>c.remove();
+  }
+}
+function burst(){ /* small tick on correct */ }
+
+// --- events ---
+$("#startBtn").onclick=startQuiz;
+$("#playerName").addEventListener("keydown",e=>{if(e.key==="Enter")startQuiz();});
+$("#nextBtn").onclick=next;
+$("#retryBtn").onclick=()=>{show("start");};
+$("#reviewToggle").onclick=()=>{const r=$("#review");r.style.display=r.style.display==="none"?"block":"none";};
+$("#muteBtn").onclick=()=>{muted=!muted;$("#muteBtn").textContent=muted?"🔇":"🔊";};
+document.addEventListener("keydown",e=>{
+  if(screens.quiz.classList.contains("on")){
+    if(!answered && ["1","2","3","4"].includes(e.key)){
+      const b=document.querySelectorAll(".opt")[+e.key-1];if(b)b.click();
+    }else if(answered && (e.key==="Enter"||e.key===" ")){e.preventDefault();next();}
+  }
+});
+</script>
